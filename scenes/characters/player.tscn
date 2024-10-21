@@ -71,6 +71,7 @@ size = Vector2(56, 44)
 
 [node name="Player" type="CharacterBody2D"]
 texture_filter = 1
+collision_layer = 2
 script = ExtResource("1_10frb")
 
 [node name="Sprite" type="Sprite2D" parent="." node_paths=PackedStringArray("body")]
@@ -90,3 +91,9 @@ shape = SubResource("RectangleShape2D_fy35m")
 
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
+
+[node name="CoyoteTime" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="JumpBuffer" type="RayCast2D" parent="."]
+position = Vector2(0, 32)
