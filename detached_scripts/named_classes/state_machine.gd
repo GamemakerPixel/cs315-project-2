@@ -35,5 +35,5 @@ func physics_process(delta: float) -> void:
 	_current_state.physics_process(delta)
 
 
-func _construct_state(state_class: State) -> State:
+func _construct_state(state_class) -> State:
 	return state_class.new()
