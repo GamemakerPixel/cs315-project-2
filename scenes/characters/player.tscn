@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://di577i7lky84j"]
+[gd_scene load_steps=14 format=3 uid="uid://di577i7lky84j"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_10frb"]
 [ext_resource type="Texture2D" uid="uid://da5r8cv0ti2fd" path="res://assets/textures/characters/player.png" id="1_csxsd"]
 [ext_resource type="Script" path="res://scenes/characters/auto_flip_sprite.gd" id="3_i3dhg"]
+[ext_resource type="Texture2D" uid="uid://dp4mvt1wvc7qf" path="res://assets/textures/ui/warp_indicator.png" id="4_jxq2e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tr0ec"]
 atlas = ExtResource("1_csxsd")
@@ -69,6 +70,68 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fy35m"]
 size = Vector2(56, 44)
 
+[sub_resource type="Animation" id="Animation_xj18l"]
+resource_name = "activate"
+length = 0.175
+step = 0.0125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.125, 0.15, 0.175),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(0.125, 0.1), Vector2(0.1, 0.125), Vector2(0.1, 0.08), Vector2(0.1, 0.1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.15, 0.175),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(325, 0), Vector2(290, 0), Vector2(300, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ogcns"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(300, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bakor"]
+_data = {
+"RESET": SubResource("Animation_ogcns"),
+"activate": SubResource("Animation_xj18l")
+}
+
 [node name="Player" type="CharacterBody2D"]
 texture_filter = 1
 script = ExtResource("1_10frb")
@@ -90,3 +153,15 @@ shape = SubResource("RectangleShape2D_fy35m")
 
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
+
+[node name="WarpIndicator" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite2D" parent="WarpIndicator"]
+position = Vector2(300, 0)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("4_jxq2e")
+
+[node name="Animation" type="AnimationPlayer" parent="WarpIndicator"]
+libraries = {
+"": SubResource("AnimationLibrary_bakor")
+}
