@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://crioxovabgg8g"]
+
+[ext_resource type="Texture2D" uid="uid://d3p2q8w8skcfj" path="res://assets/level_elements/warp_charger.png" id="1_o1joi"]
+[ext_resource type="Script" path="res://scenes/level_elements/warp_booster.gd" id="1_p6rjm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rrk50"]
+radius = 128.0
+
+[node name="WarpBooster" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_p6rjm")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(4, 4)
+texture = ExtResource("1_o1joi")
+vframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_rrk50")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

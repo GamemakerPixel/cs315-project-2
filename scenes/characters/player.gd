@@ -28,11 +28,13 @@ const JUMP_EARLY_RELEASE_DAMPING = 0.5
 const JUMP_BUFFER_TIME = 0.1
 const COYOTE_TIME = 0.1
 const WARP_JUMP_SCALE = 0.8
+const SUPER_WARP_JUMP_SCALE = 1.5
 
 var on_floor_recently := false
 var jump_buffered_recently := false
 
 var warp_used := false
+var super_warp_avaliable := false
 
 
 @onready var gravity = PhysicsServer2D.area_get_param(
@@ -149,7 +151,7 @@ func point_warp_indicator_at_mouse() -> void:
 
 
 func warp_avaliable() -> bool:
-	return warping_enabled and not warp_used
+	return warping_enabled and (not warp_used or super_warp_avaliable)
 
 
 func _get_best_warp_position() -> Vector2:
@@ -157,7 +159,7 @@ func _get_best_warp_position() -> Vector2:
 		not $WarpIndicator.has_overlapping_bodies()
 		or not $WarpIndicator/WallCheckRay.is_colliding()
 	):
-		return $WarpIndicator/Sprite.global_position
+		return $WarpIndicator/Collision.global_position
 	return $WarpIndicator/WallCheckRay.get_collision_point()
 
 
@@ -165,12 +167,15 @@ func warp() -> void:
 	var to_position: Vector2 = _get_best_warp_position()
 	var direction := (to_position - position).normalized()
 	
-	var new_velocity = (WARP_JUMP_SCALE * jump_speed) * direction
+	var new_velocity = jump_speed * direction
+	
+	new_velocity *= SUPER_WARP_JUMP_SCALE if super_warp_avaliable else WARP_JUMP_SCALE
 	
 	position = to_position
 	velocity = new_velocity
 	
 	warp_used = true
+	super_warp_avaliable = false
 
 
 func _read_run_input(event: InputEvent) -> void:
@@ -327,7 +332,9 @@ class WarpingState extends PlayerState:
 	func on_entry() -> void:
 		var slow_mo_tween = player.get_tree().create_tween()
 		slow_mo_tween.tween_property(Engine, "time_scale", 0.25, 0.05)
-		player.get_node(WARP_ANIMATION_NODEPATH).play("activate")
+		player.get_node(WARP_ANIMATION_NODEPATH).play(
+			"activate_super" if player.super_warp_avaliable else "activate"
+		)
 		player.start_floating()
 	
 	func unhandled_input(event: InputEvent) -> void:
