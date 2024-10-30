@@ -11,29 +11,20 @@ enum States {
 const ANIMATION_NODEPATH = "Animation"
 const WARP_ANIMATION_NODEPATH = "WarpIndicator/Animation"
 
-# Speed - Pixels / sec
+# Pixels / sec
 const SPEED = 350
 const FLOAT_SPEED = 25
 
 const ACCELERATION_SECONDS = 0.1
 const DECELERATION_SECONDS = 0.1
 
-# Slow-mo effect
 const TIME_SCALE_CHANGE_PER_SECOND = 2.0
 
-# Jumping
 const TILE_SIZE = 64
 const JUMP_HEIGHT = 2.65
 const JUMP_EARLY_RELEASE_DAMPING = 0.5
 const JUMP_BUFFER_TIME = 0.1
-const COYOTE_TIME = 0.1
 const WARP_JUMP_SCALE = 0.8
-
-var on_floor_recently := false
-var jump_buffered_recently := false
-
-var warp_used := false
-
 
 @onready var gravity = PhysicsServer2D.area_get_param(
 	get_viewport().find_world_2d().space,
@@ -52,24 +43,15 @@ const STATES := {
 
 var state_machine := PlayerStateMachine.new(STATES, self)
 
-var run_input := 0.0
-
 var warping_enabled = GameState.warping_enabled
-
-
 
 
 func _ready() -> void:
 	GameState.warp_enabled.connect(func(): warping_enabled = true)
-	
-	$CoyoteTimer.wait_time = COYOTE_TIME
-	$JumpBufferTimer.wait_time = JUMP_BUFFER_TIME
-	
 	state_machine.change_state_to(States.IDLE)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	_read_run_input(event)
 	state_machine.unhandled_input(event)
 
 
@@ -81,110 +63,72 @@ func _physics_process(delta: float) -> void:
 	state_machine.physics_process(delta)
 
 
-func run(delta: float) -> void:
-	var acceleration = (delta / ACCELERATION_SECONDS) * SPEED * run_input
-	velocity.x = clampf(velocity.x + acceleration, -SPEED, SPEED)
-
-
-func decelerate(delta: float) -> void:
-	var velocity_sign = signf(velocity.x)
-	var DECELERATION = (delta / DECELERATION_SECONDS) * SPEED * -velocity_sign
-	
-	var expected_velocity = velocity.x + DECELERATION
-	
-	if sign(expected_velocity) != velocity_sign:
-		velocity.x = 0.0
-	else:
-		velocity.x = expected_velocity
-
-
-func _jump() -> void:
-	velocity.y = -jump_speed
-
-func reset_jump_and_warp() -> bool:
-	warp_used = false
-	
-	$CoyoteTimer.stop()
-	$JumpBufferTimer.stop()
-	if jump_buffered_recently:
-		_jump()
-		on_floor_recently = false
-		jump_buffered_recently = false
-		print("buffer")
-		return true
-	
-	on_floor_recently = true
-	return false
-
-
-func attempt_jump() -> bool:
-	if is_on_floor() or on_floor_recently:
-		_jump()
-		if not is_on_floor():
-			print("coyote")
-		on_floor_recently = false
-		return true
-	
-	jump_buffered_recently = true
-	$JumpBufferTimer.start()
-	return false
-
-
-func start_coyote_timer() -> void:
-	$CoyoteTimer.start()
-
-
-func dampen_jump() -> void:
-	velocity.y *= JUMP_EARLY_RELEASE_DAMPING
-
-
-func fall(delta: float) -> void:
-	velocity.y += 2.0 * gravity * delta
-
-
-func start_floating() -> void:
-	var direction = velocity.normalized()
-	velocity = FLOAT_SPEED * direction
-
-
-func point_warp_indicator_at_mouse() -> void:
-	$WarpIndicator.look_at(get_global_mouse_position())
-
-
-func warp_avaliable() -> bool:
-	return warping_enabled and not warp_used
-
-
-func warp() -> void:
-	var to_position: Vector2 = $WarpIndicator/Sprite.global_position
-	var direction := (to_position - position).normalized()
-	
-	var new_velocity = (WARP_JUMP_SCALE * jump_speed) * direction
-	
-	position = to_position
-	velocity = new_velocity
-	
-	warp_used = true
-
-
-func _read_run_input(event: InputEvent) -> void:
-	if event.is_action("move_left") or event.is_action("move_right"):
-		run_input = Input.get_axis("move_left", "move_right")
-
-
-func _on_coyote_timeout() -> void:
-	on_floor_recently = false
-
-
-func _on_jump_buffer_timeout() -> void:
-	jump_buffered_recently = false
-
-
 class PlayerState extends State:
 	var player: CharacterBody2D
+	var run_input := 0.0
 	
 	func _init(player_body: CharacterBody2D) -> void:
 		player = player_body
+	
+	func unhandled_input(event: InputEvent) -> void:
+		_read_run_input(event)
+	
+	func _read_run_input(event: InputEvent) -> void:
+		if event.is_action("move_left") or event.is_action("move_right"):
+			run_input = Input.get_axis("move_left", "move_right")
+	
+	func run(delta: float) -> void:
+		var acceleration = (delta / ACCELERATION_SECONDS) * SPEED * run_input
+		player.velocity.x = clampf(player.velocity.x + acceleration, -SPEED, SPEED)
+
+
+	func decelerate(delta: float) -> void:
+		var velocity_sign = signf(player.velocity.x)
+		var DECELERATION = (delta / DECELERATION_SECONDS) * SPEED * -velocity_sign
+		
+		var expected_velocity = player.velocity.x + DECELERATION
+		
+		if sign(expected_velocity) != velocity_sign:
+			player.velocity.x = 0.0
+		else:
+			player.velocity.x = expected_velocity
+
+
+	func jump() -> void:
+		player.velocity.y = -player.jump_speed
+
+
+	func dampen_jump() -> void:
+		player.velocity.y *= JUMP_EARLY_RELEASE_DAMPING
+
+
+	func fall(delta: float) -> void:
+		player.velocity.y += 2.0 * player.gravity * delta
+
+
+	func start_floating() -> void:
+		var direction = player.velocity.normalized()
+		player.velocity = FLOAT_SPEED * direction
+
+
+	func point_warp_indicator_at_mouse() -> void:
+		player.get_node("WarpIndicator").look_at(player.get_global_mouse_position())
+
+
+	func warp_if_able() -> void:
+		if not player.warping_enabled:
+			return
+		warp()
+
+	func warp() -> void:
+		var to_position: Vector2 = player.get_node("WarpIndicator/Sprite").global_position
+		var direction := (to_position - player.position).normalized()
+		
+		var new_velocity = (WARP_JUMP_SCALE * player.jump_speed) * direction
+		
+		player.position = to_position
+		player.velocity = new_velocity
+		print(player.velocity)
 
 
 class PlayerStateMachine extends StateMachine:
@@ -199,6 +143,8 @@ class PlayerStateMachine extends StateMachine:
 	
 	
 	func change_state_to(state_identifier) -> void:
+		var state_name = States.keys()[state_identifier]
+		print("Changing state to " + state_name)
 		super.change_state_to(state_identifier)
 
 
@@ -207,23 +153,22 @@ class IdleState extends PlayerState:
 	
 	
 	func on_entry() -> void:
-		if player.reset_jump_and_warp():
-			state_machine.change_state_to(States.ASCENDING)
 		player.get_node(ANIMATION_NODEPATH).play(IDLE_ANIMATION)
 	
 	func unhandled_input(event: InputEvent) -> void:
-		if event.is_action_pressed("jump"):
-			if player.attempt_jump():
-				state_machine.change_state_to(States.ASCENDING)
+		super.unhandled_input(event)
+		if event.is_action_pressed("jump") and player.is_on_floor():
+			jump()
+			state_machine.change_state_to(States.ASCENDING)
 		
-		if event.is_action_pressed("warp") and player.warp_avaliable():
+		if event.is_action_pressed("warp"):
 			state_machine.change_state_to(States.WARPING)
 		
 		if event.is_action("move_right") or event.is_action("move_left"):
 			state_machine.change_state_to(States.RUNNING)
 	
 	func physics_process(delta: float) -> void:
-		player.decelerate(delta)
+		decelerate(delta)
 		player.move_and_slide()
 
 
@@ -234,23 +179,22 @@ class RunState extends PlayerState:
 	
 	
 	func on_entry() -> void:
-		if player.reset_jump_and_warp():
-			state_machine.change_state_to(States.ASCENDING)
 		player.get_node(ANIMATION_NODEPATH).play(RUN_ANIMATION)
 	
 	func unhandled_input(event: InputEvent) -> void:
-		if player.run_input == 0.0:
+		super.unhandled_input(event)
+		if run_input == 0.0:
 			state_machine.change_state_to(States.IDLE)
 		
-		if event.is_action_pressed("jump"):
-			if player.attempt_jump():
-				state_machine.change_state_to(States.ASCENDING)
+		if event.is_action_pressed("jump") and player.is_on_floor():
+			jump()
+			state_machine.change_state_to(States.ASCENDING)
 		
-		if event.is_action_pressed("warp") and player.warp_avaliable():
+		if event.is_action_pressed("warp"):
 			state_machine.change_state_to(States.WARPING)
 	
 	func physics_process(delta: float) -> void:
-		player.run(delta)
+		run(delta)
 		
 		player.move_and_slide()
 		
@@ -263,24 +207,21 @@ class AscendingState extends PlayerState:
 	
 	
 	func unhandled_input(event: InputEvent) -> void:
-		if event.is_action_pressed("jump"):
-			if player.attempt_jump():
-				state_machine.change_state_to(States.ASCENDING)
-		
+		super.unhandled_input(event)
 		if event.is_action_released("jump") and not jump_dampened:
-			player.dampen_jump()
+			dampen_jump()
 			jump_dampened = true
 		
-		if event.is_action_pressed("warp") and player.warp_avaliable():
+		if event.is_action_pressed("warp"):
 			state_machine.change_state_to(States.WARPING)
 	
 	func physics_process(delta: float) -> void:
-		if player.run_input != 0.0:
-			player.run(delta)
+		if run_input != 0.0:
+			run(delta)
 		else:
-			player.decelerate(delta)
+			decelerate(delta)
 		
-		player.fall(delta)
+		fall(delta)
 		
 		player.move_and_slide()
 		
@@ -289,29 +230,23 @@ class AscendingState extends PlayerState:
 
 
 class DescendingState extends PlayerState:
-	func on_entry() -> void:
-		player.start_coyote_timer()
-	
 	func unhandled_input(event: InputEvent) -> void:
-		if event.is_action_pressed("jump"):
-			if player.attempt_jump():
-				state_machine.change_state_to(States.ASCENDING)
-		
-		if event.is_action_pressed("warp") and player.warp_avaliable():
+		super.unhandled_input(event)
+		if event.is_action_pressed("warp"):
 			state_machine.change_state_to(States.WARPING)
 	
 	func physics_process(delta: float) -> void:
-		if player.run_input != 0.0:
-			player.run(delta)
+		if run_input != 0.0:
+			run(delta)
 		else:
-			player.decelerate(delta)
+			decelerate(delta)
 		
-		player.fall(delta)
+		fall(delta)
 		
 		player.move_and_slide()
 		
 		if player.is_on_floor():
-			if player.run_input == 0.0:
+			if run_input == 0.0:
 				state_machine.change_state_to(States.IDLE)
 			else:
 				state_machine.change_state_to(States.RUNNING)
@@ -322,22 +257,21 @@ class WarpingState extends PlayerState:
 		var slow_mo_tween = player.get_tree().create_tween()
 		slow_mo_tween.tween_property(Engine, "time_scale", 0.25, 0.05)
 		player.get_node(WARP_ANIMATION_NODEPATH).play("activate")
-		player.start_floating()
+		start_floating()
 	
 	func unhandled_input(event: InputEvent) -> void:
+		super.unhandled_input(event)
 		if event.is_action_released("warp"):
-			player.warp()
+			warp()
 			if player.velocity.y < 0:
 				state_machine.change_state_to(States.ASCENDING)
 			else:
 				state_machine.change_state_to(States.DESCENDING)
 	
 	func process(_delta: float) -> void:
-		player.point_warp_indicator_at_mouse()
+		point_warp_indicator_at_mouse()
 	
 	func physics_process(_delta: float) -> void:
-		#player.adjust_time_scale_towards(delta, 0.5)
-		#player.fall(delta)
 		player.move_and_slide()
 	
 	func on_exit() -> void:
