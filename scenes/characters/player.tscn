@@ -1,9 +1,13 @@
-[gd_scene load_steps=17 format=3 uid="uid://di577i7lky84j"]
+[gd_scene load_steps=21 format=3 uid="uid://di577i7lky84j"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_10frb"]
 [ext_resource type="Texture2D" uid="uid://da5r8cv0ti2fd" path="res://assets/textures/characters/player.png" id="1_csxsd"]
 [ext_resource type="Script" path="res://scenes/characters/auto_flip_sprite.gd" id="3_i3dhg"]
 [ext_resource type="Texture2D" uid="uid://dp4mvt1wvc7qf" path="res://assets/textures/ui/warp_indicator.png" id="4_jxq2e"]
+[ext_resource type="Texture2D" uid="uid://bn02j730voeom" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg3.png" id="5_ua5nc"]
+[ext_resource type="Texture2D" uid="uid://c0x5rhys3qewo" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg2.png" id="6_gv3aa"]
+[ext_resource type="Texture2D" uid="uid://54hd0vtjefxd" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg1.png" id="7_w0oic"]
+[ext_resource type="Texture2D" uid="uid://c60foqq85yltq" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg0.png" id="8_bwsk3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tr0ec"]
 atlas = ExtResource("1_csxsd")
@@ -360,6 +364,45 @@ shape = SubResource("CircleShape2D_glma6")
 [node name="CoyoteTimer" type="Timer" parent="."]
 
 [node name="JumpBufferTimer" type="Timer" parent="."]
+
+[node name="Background" type="ParallaxBackground" parent="."]
+scroll_base_scale = Vector2(1, 0)
+
+[node name="3" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.1, 0)
+motion_mirroring = Vector2(1152, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/3"]
+scale = Vector2(4, 4)
+texture = ExtResource("5_ua5nc")
+centered = false
+
+[node name="2" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.25, 0)
+motion_mirroring = Vector2(1152, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/2"]
+scale = Vector2(4, 4)
+texture = ExtResource("6_gv3aa")
+centered = false
+
+[node name="1" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.5, 0)
+motion_mirroring = Vector2(1152, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/1"]
+scale = Vector2(4, 4)
+texture = ExtResource("7_w0oic")
+centered = false
+
+[node name="0" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.75, 0)
+motion_mirroring = Vector2(1152, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/0"]
+scale = Vector2(4, 4)
+texture = ExtResource("8_bwsk3")
+centered = false
 
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timeout"]
 [connection signal="timeout" from="JumpBufferTimer" to="." method="_on_jump_buffer_timeout"]
