@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://di577i7lky84j"]
+[gd_scene load_steps=16 format=3 uid="uid://di577i7lky84j"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_10frb"]
 [ext_resource type="Texture2D" uid="uid://da5r8cv0ti2fd" path="res://assets/textures/characters/player.png" id="1_csxsd"]
@@ -198,6 +198,9 @@ _data = {
 "disappear": SubResource("Animation_ngmip")
 }
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_glma6"]
+radius = 22.0
+
 [node name="Player" type="CharacterBody2D"]
 texture_filter = 1
 collision_layer = 2
@@ -221,17 +224,24 @@ shape = SubResource("RectangleShape2D_fy35m")
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 
-[node name="WarpIndicator" type="Node2D" parent="."]
+[node name="WarpIndicator" type="Area2D" parent="."]
+
+[node name="Animation" type="AnimationPlayer" parent="WarpIndicator"]
+libraries = {
+"": SubResource("AnimationLibrary_bakor")
+}
+
+[node name="WallCheckRay" type="RayCast2D" parent="WarpIndicator"]
+target_position = Vector2(200, 0)
 
 [node name="Sprite" type="Sprite2D" parent="WarpIndicator"]
 position = Vector2(300, 0)
 scale = Vector2(1e-05, 1e-05)
 texture = ExtResource("4_jxq2e")
 
-[node name="Animation" type="AnimationPlayer" parent="WarpIndicator"]
-libraries = {
-"": SubResource("AnimationLibrary_bakor")
-}
+[node name="Collision" type="CollisionShape2D" parent="WarpIndicator"]
+position = Vector2(200, 0)
+shape = SubResource("CircleShape2D_glma6")
 
 [node name="CoyoteTimer" type="Timer" parent="."]
 

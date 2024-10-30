@@ -110,7 +110,6 @@ func reset_jump_and_warp() -> bool:
 		_jump()
 		on_floor_recently = false
 		jump_buffered_recently = false
-		print("buffer")
 		return true
 	
 	on_floor_recently = true
@@ -120,8 +119,6 @@ func reset_jump_and_warp() -> bool:
 func attempt_jump() -> bool:
 	if is_on_floor() or on_floor_recently:
 		_jump()
-		if not is_on_floor():
-			print("coyote")
 		on_floor_recently = false
 		return true
 	
@@ -155,8 +152,17 @@ func warp_avaliable() -> bool:
 	return warping_enabled and not warp_used
 
 
+func _get_best_warp_position() -> Vector2:
+	if (
+		not $WarpIndicator.has_overlapping_bodies()
+		or not $WarpIndicator/WallCheckRay.is_colliding()
+	):
+		return $WarpIndicator/Sprite.global_position
+	return $WarpIndicator/WallCheckRay.get_collision_point()
+
+
 func warp() -> void:
-	var to_position: Vector2 = $WarpIndicator/Sprite.global_position
+	var to_position: Vector2 = _get_best_warp_position()
 	var direction := (to_position - position).normalized()
 	
 	var new_velocity = (WARP_JUMP_SCALE * jump_speed) * direction
