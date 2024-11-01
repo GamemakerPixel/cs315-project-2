@@ -11,12 +11,14 @@ config_version=5
 [application]
 
 config/name="The Escape"
+run/main_scene="res://scenes/menus/main_menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 GameState="*res://detached_scripts/autoload/game_state.gd"
+DebugControls="res://detached_scripts/autoload/debug_controls.gd"
 
 [display]
 
@@ -55,11 +57,18 @@ interact={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":2,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
+debug_restart_scene={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
+]
+}
 
 [layer_names]
 
 2d_physics/layer_1="environment"
 2d_physics/layer_2="player"
+2d_physics/layer_3="warp_blocking"
+2d_physics/layer_4="deadly"
 
 [rendering]
 

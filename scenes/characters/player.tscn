@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://di577i7lky84j"]
+[gd_scene load_steps=29 format=3 uid="uid://di577i7lky84j"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_10frb"]
 [ext_resource type="Texture2D" uid="uid://da5r8cv0ti2fd" path="res://assets/textures/characters/player.png" id="1_csxsd"]
@@ -8,6 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://c0x5rhys3qewo" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg2.png" id="6_gv3aa"]
 [ext_resource type="Texture2D" uid="uid://54hd0vtjefxd" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg1.png" id="7_w0oic"]
 [ext_resource type="Texture2D" uid="uid://c60foqq85yltq" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg0.png" id="8_bwsk3"]
+[ext_resource type="Theme" uid="uid://c5qjykire51wm" path="res://assets/menu_theme.tres" id="9_4b1xx"]
+[ext_resource type="Script" path="res://scenes/characters/ui.gd" id="9_r636i"]
+[ext_resource type="Texture2D" uid="uid://ddreyf0ahb54t" path="res://assets/level_elements/key_fragment.png" id="10_en0dk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tr0ec"]
 atlas = ExtResource("1_csxsd")
@@ -202,47 +205,6 @@ tracks/4/keys = {
 "values": [Vector2(200, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_ngmip"]
-resource_name = "disappear"
-length = 0.25
-step = 0.0125
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:scale")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.025, 0.25),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0.1, 0.1), Vector2(0.15, 0.15), Vector2(0.01, 0.01)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite:self_modulate")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.025, 0.1, 0.25),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(0.94902, 0.701961, 0.482353, 1), Color(0.95, 0.95, 0.95, 1), Color(0.95, 0.95, 0.95, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_uyn00"]
 resource_name = "activate_super"
 length = 0.1
@@ -308,6 +270,47 @@ tracks/4/keys = {
 "values": [Vector2(300, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_ngmip"]
+resource_name = "disappear"
+length = 0.25
+step = 0.0125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(0.15, 0.15), Vector2(0.01, 0.01)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.1, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.94902, 0.701961, 0.482353, 1), Color(0.95, 0.95, 0.95, 1), Color(0.95, 0.95, 0.95, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bakor"]
 _data = {
 "RESET": SubResource("Animation_ogcns"),
@@ -318,6 +321,64 @@ _data = {
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_glma6"]
 radius = 22.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tuy4e"]
+atlas = ExtResource("10_en0dk")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="Animation" id="Animation_ef2qb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_wor4t"]
+resource_name = "fade_in"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_373rj"]
+resource_name = "fade_out"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yh1pk"]
+_data = {
+"RESET": SubResource("Animation_ef2qb"),
+"fade_in": SubResource("Animation_wor4t"),
+"fade_out": SubResource("Animation_373rj")
+}
 
 [node name="Player" type="CharacterBody2D"]
 texture_filter = 1
@@ -339,9 +400,6 @@ libraries = {
 position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_fy35m")
 
-[node name="Camera" type="Camera2D" parent="."]
-position_smoothing_enabled = true
-
 [node name="WarpIndicator" type="Area2D" parent="."]
 
 [node name="Animation" type="AnimationPlayer" parent="WarpIndicator"]
@@ -352,6 +410,10 @@ libraries = {
 [node name="WallCheckRay" type="RayCast2D" parent="WarpIndicator"]
 target_position = Vector2(200, 0)
 
+[node name="BlockerCheckRay" type="RayCast2D" parent="WarpIndicator"]
+target_position = Vector2(200, 0)
+collision_mask = 4
+
 [node name="Sprite" type="Sprite2D" parent="WarpIndicator"]
 position = Vector2(300, 0)
 scale = Vector2(1e-05, 1e-05)
@@ -360,6 +422,14 @@ texture = ExtResource("4_jxq2e")
 [node name="Collision" type="CollisionShape2D" parent="WarpIndicator"]
 position = Vector2(200, 0)
 shape = SubResource("CircleShape2D_glma6")
+
+[node name="DeadlyDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape" type="CollisionShape2D" parent="DeadlyDetector"]
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_fy35m")
 
 [node name="CoyoteTimer" type="Timer" parent="."]
 
@@ -404,5 +474,42 @@ scale = Vector2(4, 4)
 texture = ExtResource("8_bwsk3")
 centered = false
 
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("9_r636i")
+
+[node name="Margin" type="MarginContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("9_4b1xx")
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="TopBar" type="HBoxContainer" parent="UI/Margin"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 2
+
+[node name="KeyCount" type="Label" parent="UI/Margin/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "#"
+
+[node name="KeyIcon" type="TextureRect" parent="UI/Margin/TopBar"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = SubResource("AtlasTexture_tuy4e")
+
+[node name="Animation" type="AnimationPlayer" parent="UI/Margin/TopBar"]
+libraries = {
+"": SubResource("AnimationLibrary_yh1pk")
+}
+
+[connection signal="body_entered" from="DeadlyDetector" to="." method="_on_deadly_detector_body_entered"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timeout"]
 [connection signal="timeout" from="JumpBufferTimer" to="." method="_on_jump_buffer_timeout"]

@@ -155,6 +155,9 @@ func warp_avaliable() -> bool:
 
 
 func _get_best_warp_position() -> Vector2:
+	if $WarpIndicator/BlockerCheckRay.is_colliding():
+		return $WarpIndicator/BlockerCheckRay.get_collision_point()
+	
 	if (
 		not $WarpIndicator.has_overlapping_bodies()
 		or not $WarpIndicator/WallCheckRay.is_colliding()
@@ -207,10 +210,6 @@ class PlayerStateMachine extends StateMachine:
 	
 	func _construct_state(state_class) -> State:
 		return state_class.new(player)
-	
-	
-	func change_state_to(state_identifier) -> void:
-		super.change_state_to(state_identifier)
 
 
 class IdleState extends PlayerState:
@@ -236,6 +235,9 @@ class IdleState extends PlayerState:
 	func physics_process(delta: float) -> void:
 		player.decelerate(delta)
 		player.move_and_slide()
+		
+		if not player.is_on_floor():
+			state_machine.change_state_to(States.DESCENDING)
 
 
 class RunState extends PlayerState:
@@ -357,3 +359,7 @@ class WarpingState extends PlayerState:
 		var slow_mo_tween = player.get_tree().create_tween()
 		slow_mo_tween.tween_property(Engine, "time_scale", 1.0, 0.05)
 		player.get_node(WARP_ANIMATION_NODEPATH).play("disappear")
+
+
+func _on_deadly_detector_body_entered(_body: Node2D) -> void:
+	get_tree().call_deferred("reload_current_scene")

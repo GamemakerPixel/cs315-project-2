@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://6es0n8722hxg"]
+
+[ext_resource type="Texture2D" uid="uid://cgmxmge10fvlb" path="res://assets/textures/tilesets/lab_tiles.png" id="1_ilwyi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kb1e8"]
+atlas = ExtResource("1_ilwyi")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qrxyg"]
+size = Vector2(192, 64)
+
+[node name="Conveyor" type="StaticBody2D"]
+constant_linear_velocity = Vector2(50, 0)
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(12, 4)
+texture = SubResource("AtlasTexture_kb1e8")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_qrxyg")
