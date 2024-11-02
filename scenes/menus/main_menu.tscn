@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_tnxbh")
 script = ExtResource("2_r6f2h")
-game_scene = "res://scenes/levels/testing/test_level.tscn"
+game_scene = "res://scenes/levels/lab/start.tscn"
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1

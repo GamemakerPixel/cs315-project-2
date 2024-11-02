@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bon8l6cry6xpc"
-path="res://.godot/imported/warp_enable.png-e7b09969c1b942fa099eaa1cf92af1e1.ctex"
+uid="uid://cmt5b6ci0dbn"
+path="res://.godot/imported/anti_warp_lab_tiles.png-58ebd953b9225a8f2128afb3eb0e7efa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/level_elements/warp_enable.png"
-dest_files=["res://.godot/imported/warp_enable.png-e7b09969c1b942fa099eaa1cf92af1e1.ctex"]
+source_file="res://assets/textures/tilesets/anti_warp_lab_tiles.png"
+dest_files=["res://.godot/imported/anti_warp_lab_tiles.png-58ebd953b9225a8f2128afb3eb0e7efa.ctex"]
 
 [params]
 

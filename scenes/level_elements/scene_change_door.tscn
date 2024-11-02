@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bf8a0yq3fwxy7"]
+
+[ext_resource type="Script" path="res://scenes/level_elements/scene_change_door.gd" id="1_xubmp"]
+[ext_resource type="PackedScene" uid="uid://di577i7lky84j" path="res://scenes/characters/player.tscn" id="2_04cf1"]
+
+[node name="SceneChangeDoor" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_xubmp")
+player_scene = ExtResource("2_04cf1")
+
+[connection signal="body_entered" from="." to="." method="_on_player_entered"]

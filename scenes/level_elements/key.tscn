@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://74u2gubi6kb"]
 
-[ext_resource type="Texture2D" uid="uid://ddreyf0ahb54t" path="res://assets/level_elements/key_fragment.png" id="1_hlj17"]
+[ext_resource type="Texture2D" uid="uid://ddreyf0ahb54t" path="res://assets/textures/level_elements/key_fragment.png" id="1_hlj17"]
 [ext_resource type="Script" path="res://scenes/level_elements/key.gd" id="1_oe8y3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tu74o"]

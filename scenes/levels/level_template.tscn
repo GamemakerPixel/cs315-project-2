@@ -1,35 +1,42 @@
-[gd_scene load_steps=5 format=4 uid="uid://cd4gbc45mi5f3"]
+[gd_scene load_steps=6 format=3 uid="uid://cd4gbc45mi5f3"]
 
-[ext_resource type="TileSet" uid="uid://ciqcco3d5cp4m" path="res://assets/tilesets/lab_bg.tres" id="1_bc87j"]
+[ext_resource type="Script" path="res://scenes/levels/level_root.gd" id="1_n2bac"]
 [ext_resource type="TileSet" uid="uid://gyyvk0gkp4pk" path="res://assets/tilesets/lab.tres" id="2_cjout"]
-[ext_resource type="PackedScene" uid="uid://di577i7lky84j" path="res://scenes/characters/player.tscn" id="3_gl2ks"]
-[ext_resource type="PackedScene" uid="uid://bjj5fdlkcjnvt" path="res://scenes/characters/player_camera.tscn" id="4_82a33"]
+[ext_resource type="PackedScene" uid="uid://dbkvdjty6mf56" path="res://scenes/level_elements/initial_player_spawner.tscn" id="4_a1dbe"]
+[ext_resource type="PackedScene" uid="uid://bf8a0yq3fwxy7" path="res://scenes/level_elements/scene_change_door.tscn" id="5_sw213"]
 
-[node name="TestLevel" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ym34"]
+size = Vector2(64, 128)
+
+[node name="TestLevel" type="Node2D" node_paths=PackedStringArray("bottom_right_limit", "upper_left_limit")]
 texture_filter = 1
-
-[node name="BackgroundTiles" type="TileMapLayer" parent="."]
-scale = Vector2(4, 4)
-tile_map_data = PackedByteArray("AAAEAAUAAAAAAAEAAAAEAAQAAAAAAAEAAAAFAAQAAAABAAAAAAAGAAQAAAACAAAAAAAGAAUAAAACAAEAAAAFAAUAAAABAAEAAAAGAAYAAAACAAIAAAAFAAYAAAABAAIAAAAEAAYAAAAAAAIAAAA=")
-tile_set = ExtResource("1_bc87j")
+script = ExtResource("1_n2bac")
+bottom_right_limit = NodePath("CameraBounds/BottomRight")
+upper_left_limit = NodePath("CameraBounds/UpperLeft")
 
 [node name="Tiles" type="TileMapLayer" parent="."]
 scale = Vector2(4, 4)
-tile_map_data = PackedByteArray("AAAEAAYAAAACAAEAAAAFAAYAAAADAAEAAAAGAAYAAAAEAAEAAAA=")
+tile_map_data = PackedByteArray(0, 0, 4, 0, 6, 0, 0, 0, 2, 0, 1, 0, 0, 0, 5, 0, 6, 0, 0, 0, 3, 0, 1, 0, 0, 0, 6, 0, 6, 0, 0, 0, 4, 0, 1, 0, 0, 0)
 tile_set = ExtResource("2_cjout")
 metadata/_edit_lock_ = true
 
-[node name="Player" parent="." instance=ExtResource("3_gl2ks")]
+[node name="InitialPlayerSpawner" parent="." instance=ExtResource("4_a1dbe")]
 position = Vector2(352, 352)
-
-[node name="PlayerCamera" parent="Player" node_paths=PackedStringArray("bottom_right_limit", "upper_left_limit") instance=ExtResource("4_82a33")]
-bottom_right_limit = NodePath("../../CameraBounds/BottomRight")
-upper_left_limit = NodePath("../../CameraBounds/UpperLeft")
 
 [node name="CameraBounds" type="Node2D" parent="."]
 
 [node name="BottomRight" type="Node2D" parent="CameraBounds"]
-position = Vector2(512, 512)
+position = Vector2(960, 704)
 
 [node name="UpperLeft" type="Node2D" parent="CameraBounds"]
-position = Vector2(192, 192)
+position = Vector2(-256, 0)
+
+[node name="SceneChangeDoors" type="Node2D" parent="."]
+
+[node name="SceneChangeDoor" parent="SceneChangeDoors" node_paths=PackedStringArray("player_spawn_position") instance=ExtResource("5_sw213")]
+player_spawn_position = NodePath("PlayerSpawn")
+
+[node name="Collision" type="CollisionShape2D" parent="SceneChangeDoors/SceneChangeDoor"]
+shape = SubResource("RectangleShape2D_5ym34")
+
+[node name="PlayerSpawn" type="Node2D" parent="SceneChangeDoors/SceneChangeDoor"]

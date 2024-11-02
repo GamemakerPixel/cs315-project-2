@@ -4,13 +4,15 @@ signal warp_enabled
 signal key_count_updated
 signal key_set_completed
 
+const NO_DOORWAY_REQUESTED = -2
+
 var warping_enabled = false
 
 # { key_set_id: [key_id, key_id, ...], ... }
 var keys_collected: Dictionary = {}
 var completed_key_sets: Array[int] = []
 var last_key_collected_set_id := -1
-
+var doorway_id_requested := NO_DOORWAY_REQUESTED
 
 func enable_warping() -> void:
 	warping_enabled = true

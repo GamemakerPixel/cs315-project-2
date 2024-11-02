@@ -12,6 +12,7 @@ func _ready() -> void:
 	if GameState.get_key_count(key_set_id) == MAX_KEYS:
 		open = true
 		$Animation.play("opened")
+		return
 	
 	_keys_collected = GameState.get_key_count(key_set_id)
 	GameState.key_count_updated.connect(_on_key_collected)

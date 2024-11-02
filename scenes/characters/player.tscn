@@ -1,8 +1,9 @@
-[gd_scene load_steps=29 format=3 uid="uid://di577i7lky84j"]
+[gd_scene load_steps=48 format=3 uid="uid://di577i7lky84j"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_10frb"]
 [ext_resource type="Texture2D" uid="uid://da5r8cv0ti2fd" path="res://assets/textures/characters/player.png" id="1_csxsd"]
 [ext_resource type="Script" path="res://scenes/characters/auto_flip_sprite.gd" id="3_i3dhg"]
+[ext_resource type="PackedScene" uid="uid://bjj5fdlkcjnvt" path="res://scenes/characters/player_camera.tscn" id="4_5phwi"]
 [ext_resource type="Texture2D" uid="uid://dp4mvt1wvc7qf" path="res://assets/textures/ui/warp_indicator.png" id="4_jxq2e"]
 [ext_resource type="Texture2D" uid="uid://bn02j730voeom" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg3.png" id="5_ua5nc"]
 [ext_resource type="Texture2D" uid="uid://c0x5rhys3qewo" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg2.png" id="6_gv3aa"]
@@ -10,7 +11,15 @@
 [ext_resource type="Texture2D" uid="uid://c60foqq85yltq" path="res://assets/textures/characters/parallax_bg/lab_parallax_bg0.png" id="8_bwsk3"]
 [ext_resource type="Theme" uid="uid://c5qjykire51wm" path="res://assets/menu_theme.tres" id="9_4b1xx"]
 [ext_resource type="Script" path="res://scenes/characters/ui.gd" id="9_r636i"]
-[ext_resource type="Texture2D" uid="uid://ddreyf0ahb54t" path="res://assets/level_elements/key_fragment.png" id="10_en0dk"]
+[ext_resource type="Texture2D" uid="uid://ddreyf0ahb54t" path="res://assets/textures/level_elements/key_fragment.png" id="10_en0dk"]
+[ext_resource type="AudioStream" uid="uid://cro8xumyy4riv" path="res://assets/sound/player_footsteps/0.wav" id="13_vxmev"]
+[ext_resource type="AudioStream" uid="uid://c6cvdp0hchr4e" path="res://assets/sound/player_footsteps/1.wav" id="14_0sh8i"]
+[ext_resource type="AudioStream" uid="uid://g5jbonu1o7po" path="res://assets/sound/player_footsteps/2.wav" id="15_tcfu7"]
+[ext_resource type="AudioStream" uid="uid://cq2ql7mjyygw5" path="res://assets/sound/player_footsteps/3.wav" id="16_yvjy1"]
+[ext_resource type="Script" path="res://scenes/audio/audio_stream_looper.gd" id="17_o1a1j"]
+[ext_resource type="AudioStream" uid="uid://v6sg0vwrdd6c" path="res://assets/sound/player_jump.wav" id="18_knxwx"]
+[ext_resource type="AudioStream" uid="uid://3l34owxga580" path="res://assets/sound/warp_start.wav" id="19_10trb"]
+[ext_resource type="AudioStream" uid="uid://b1vhmmwewscb2" path="res://assets/sound/warp_end.wav" id="20_s5jgi"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tr0ec"]
 atlas = ExtResource("1_csxsd")
@@ -30,6 +39,78 @@ tracks/0/keys = {
 "update": 0,
 "values": [Rect2(0, 0, 24, 24)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DeathEffect:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_qy80s"]
+resource_name = "ascending"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(24, 24, 24, 24)]
+}
+
+[sub_resource type="Animation" id="Animation_5ldft"]
+resource_name = "death"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DeathEffect:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ena32"]
+resource_name = "descending"
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_lmbt1"]
 resource_name = "idle"
@@ -67,11 +148,31 @@ tracks/0/keys = {
 "values": [Rect2(0, 24, 24, 24), Rect2(24, 24, 24, 24), Rect2(48, 24, 24, 24), Rect2(72, 24, 24, 24)]
 }
 
+[sub_resource type="Animation" id="Animation_1ctjl"]
+resource_name = "warping"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(24, 24, 24, 24)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b4sfl"]
 _data = {
 "RESET": SubResource("Animation_y2i7p"),
+"ascending": SubResource("Animation_qy80s"),
+"death": SubResource("Animation_5ldft"),
+"descending": SubResource("Animation_ena32"),
 "idle": SubResource("Animation_lmbt1"),
-"run": SubResource("Animation_wow1p")
+"run": SubResource("Animation_wow1p"),
+"warping": SubResource("Animation_1ctjl")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fy35m"]
@@ -380,6 +481,40 @@ _data = {
 "fade_out": SubResource("Animation_373rj")
 }
 
+[sub_resource type="Gradient" id="Gradient_4shw3"]
+colors = PackedColorArray(0.969873, 0.98, 0.6762, 1, 0.88, 0.49104, 0.4312, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rmpum"]
+gradient = SubResource("Gradient_4shw3")
+
+[sub_resource type="Curve" id="Curve_72ywu"]
+max_value = 5.0
+_data = [Vector2(0, 5), 0.0, 0.0, 0, 0, Vector2(1, 0.318681), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_t35ei"]
+curve = SubResource("Curve_72ywu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fbrs0"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 260.0
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 25.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_t35ei")
+color_ramp = SubResource("GradientTexture1D_rmpum")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_rcwsh"]
+random_pitch = 1.3
+streams_count = 4
+stream_0/stream = ExtResource("13_vxmev")
+stream_1/stream = ExtResource("14_0sh8i")
+stream_2/stream = ExtResource("15_tcfu7")
+stream_3/stream = ExtResource("16_yvjy1")
+
 [node name="Player" type="CharacterBody2D"]
 texture_filter = 1
 collision_layer = 2
@@ -399,6 +534,8 @@ libraries = {
 [node name="Collision" type="CollisionShape2D" parent="."]
 position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_fy35m")
+
+[node name="PlayerCamera" parent="." instance=ExtResource("4_5phwi")]
 
 [node name="WarpIndicator" type="Area2D" parent="."]
 
@@ -509,6 +646,29 @@ texture = SubResource("AtlasTexture_tuy4e")
 libraries = {
 "": SubResource("AnimationLibrary_yh1pk")
 }
+
+[node name="DeathEffect" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_fbrs0")
+one_shot = true
+explosiveness = 0.7
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Footsteps" type="AudioStreamPlayer" parent="Sounds"]
+stream = SubResource("AudioStreamRandomizer_rcwsh")
+bus = &"Sound"
+script = ExtResource("17_o1a1j")
+
+[node name="Jump" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("18_knxwx")
+
+[node name="WarpStart" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("19_10trb")
+
+[node name="WarpEnd" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("20_s5jgi")
 
 [connection signal="body_entered" from="DeadlyDetector" to="." method="_on_deadly_detector_body_entered"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timeout"]

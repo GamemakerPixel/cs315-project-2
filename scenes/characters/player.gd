@@ -6,6 +6,7 @@ enum States {
 	ASCENDING,
 	DESCENDING,
 	WARPING,
+	DEAD,
 }
 
 const ANIMATION_NODEPATH = "Animation"
@@ -50,6 +51,7 @@ const STATES := {
 	States.ASCENDING: AscendingState,
 	States.DESCENDING: DescendingState,
 	States.WARPING: WarpingState,
+	States.DEAD: DeadState,
 }
 
 var state_machine := PlayerStateMachine.new(STATES, self)
@@ -102,6 +104,7 @@ func decelerate(delta: float) -> void:
 
 func _jump() -> void:
 	velocity.y = -jump_speed
+	$Sounds/Jump.play()
 
 func reset_jump_and_warp() -> bool:
 	warp_used = false
@@ -167,6 +170,7 @@ func _get_best_warp_position() -> Vector2:
 
 
 func warp() -> void:
+	$Sounds/WarpEnd.play()
 	var to_position: Vector2 = _get_best_warp_position()
 	var direction := (to_position - position).normalized()
 	
@@ -192,6 +196,10 @@ func _on_coyote_timeout() -> void:
 
 func _on_jump_buffer_timeout() -> void:
 	jump_buffered_recently = false
+
+
+func on_killed() -> void:
+	state_machine.change_state_to(States.DEAD)
 
 
 class PlayerState extends State:
@@ -250,6 +258,8 @@ class RunState extends PlayerState:
 		if player.reset_jump_and_warp():
 			state_machine.change_state_to(States.ASCENDING)
 		player.get_node(ANIMATION_NODEPATH).play(RUN_ANIMATION)
+		player.get_node("Sounds/Footsteps").looping_enabled = true
+		player.get_node("Sounds/Footsteps").play()
 	
 	func unhandled_input(event: InputEvent) -> void:
 		if player.run_input == 0.0:
@@ -269,10 +279,17 @@ class RunState extends PlayerState:
 		
 		if not player.is_on_floor():
 			state_machine.change_state_to(States.DESCENDING)
+	
+	func on_exit() -> void:
+		player.get_node("Sounds/Footsteps").looping_enabled = false
 
 
 class AscendingState extends PlayerState:
+	const ASCENDING_ANIMATION = "ascending"
 	var jump_dampened = false
+	
+	func on_entry() -> void:
+		player.get_node(ANIMATION_NODEPATH).play(ASCENDING_ANIMATION)
 	
 	
 	func unhandled_input(event: InputEvent) -> void:
@@ -302,8 +319,11 @@ class AscendingState extends PlayerState:
 
 
 class DescendingState extends PlayerState:
+	const DESCENDING_ANIMATION = "descending"
+	
 	func on_entry() -> void:
 		player.start_coyote_timer()
+		player.get_node(ANIMATION_NODEPATH).play(DESCENDING_ANIMATION)
 	
 	func unhandled_input(event: InputEvent) -> void:
 		if event.is_action_pressed("jump"):
@@ -332,6 +352,8 @@ class DescendingState extends PlayerState:
 
 class WarpingState extends PlayerState:
 	func on_entry() -> void:
+		player.get_node(ANIMATION_NODEPATH).play("warping")
+		player.get_node("Sounds/WarpStart").play()
 		var slow_mo_tween = player.get_tree().create_tween()
 		slow_mo_tween.tween_property(Engine, "time_scale", 0.25, 0.05)
 		player.get_node(WARP_ANIMATION_NODEPATH).play(
@@ -361,5 +383,14 @@ class WarpingState extends PlayerState:
 		player.get_node(WARP_ANIMATION_NODEPATH).play("disappear")
 
 
+class DeadState extends PlayerState:
+	func on_entry():
+		player.get_node(ANIMATION_NODEPATH).animation_finished.connect(_on_animation_finished)
+		player.get_node(ANIMATION_NODEPATH).play("death")
+	
+	func _on_animation_finished(_anim_name: String) -> void:
+		player.get_tree().call_deferred("reload_current_scene")
+
+
 func _on_deadly_detector_body_entered(_body: Node2D) -> void:
-	get_tree().call_deferred("reload_current_scene")
+	on_killed()

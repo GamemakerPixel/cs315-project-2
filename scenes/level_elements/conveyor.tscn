@@ -1,20 +1,39 @@
-[gd_scene load_steps=4 format=3 uid="uid://6es0n8722hxg"]
+[gd_scene load_steps=7 format=3 uid="uid://6es0n8722hxg"]
 
-[ext_resource type="Texture2D" uid="uid://cgmxmge10fvlb" path="res://assets/textures/tilesets/lab_tiles.png" id="1_ilwyi"]
+[ext_resource type="Script" path="res://scenes/level_elements/conveyor.gd" id="1_x8c47"]
+[ext_resource type="Texture2D" uid="uid://do400kchc3ieh" path="res://assets/textures/level_elements/lab_conveyors.png" id="2_fu1ko"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x83ld"]
+atlas = ExtResource("2_fu1ko")
+region = Rect2(0, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kb1e8"]
-atlas = ExtResource("1_ilwyi")
-region = Rect2(16, 32, 16, 16)
+atlas = ExtResource("2_fu1ko")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j5lwk"]
+atlas = ExtResource("2_fu1ko")
+region = Rect2(16, 16, 16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qrxyg"]
 size = Vector2(192, 64)
 
 [node name="Conveyor" type="StaticBody2D"]
-constant_linear_velocity = Vector2(50, 0)
+constant_linear_velocity = Vector2(100, 0)
+script = ExtResource("1_x8c47")
+inner_tile_texture = SubResource("AtlasTexture_x83ld")
 
-[node name="Sprite" type="Sprite2D" parent="."]
-scale = Vector2(12, 4)
+[node name="StartSprite" type="Sprite2D" parent="."]
+position = Vector2(-32, 0)
+scale = Vector2(4, 4)
 texture = SubResource("AtlasTexture_kb1e8")
+
+[node name="InnerSprites" type="Node2D" parent="."]
+
+[node name="EndSprite" type="Sprite2D" parent="."]
+position = Vector2(32, 0)
+scale = Vector2(4, 4)
+texture = SubResource("AtlasTexture_j5lwk")
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qrxyg")

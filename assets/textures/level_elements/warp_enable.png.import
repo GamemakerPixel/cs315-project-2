@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3p2q8w8skcfj"
-path="res://.godot/imported/warp_charger.png-b9ba0896a1614ee851e7cdb7430b0e7a.ctex"
+uid="uid://bon8l6cry6xpc"
+path="res://.godot/imported/warp_enable.png-70941ab017c597f50cb7a6c521850361.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/level_elements/warp_charger.png"
-dest_files=["res://.godot/imported/warp_charger.png-b9ba0896a1614ee851e7cdb7430b0e7a.ctex"]
+source_file="res://assets/textures/level_elements/warp_enable.png"
+dest_files=["res://.godot/imported/warp_enable.png-70941ab017c597f50cb7a6c521850361.ctex"]
 
 [params]
 

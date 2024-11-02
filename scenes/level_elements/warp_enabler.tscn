@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://hfegf5urqhyv"]
 
 [ext_resource type="Script" path="res://scenes/level_elements/warp_enabler.gd" id="1_aluip"]
-[ext_resource type="Texture2D" uid="uid://bon8l6cry6xpc" path="res://assets/level_elements/warp_enable.png" id="1_h88eq"]
+[ext_resource type="Texture2D" uid="uid://bon8l6cry6xpc" path="res://assets/textures/level_elements/warp_enable.png" id="1_h88eq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d4hst"]
 radius = 24.0

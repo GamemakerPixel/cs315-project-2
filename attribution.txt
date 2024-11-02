@@ -1,2 +1,7 @@
 Unmodified Use:
 	good_times.otf - Good Times font - Typodermic Fonts Inc. - Custom Desktop License - https://www.1001fonts.com/good-times-font.html
+
+Modified Use:
+	Walking on small gravel.wav - Made into player_footsteps/*.wav - CC0 - https://freesound.org/people/775noise/sounds/494571/
+	Footstep_Male-Gravel-Scrapes_Mono_96000.wav - Made into player_jump.wav - CC0 - https://freesound.org/people/Sonicquinn/sounds/435836/
+	
